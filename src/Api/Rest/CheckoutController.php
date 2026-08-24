@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace IraniLMS\Api\Rest;
 
-use IraniLMS\Domain\Commerce\Checkout\CheckoutService;
-use IraniLMS\Domain\Commerce\Gateway\GatewayManager;
-use IraniLMS\Domain\Commerce\Order;
-use IraniLMS\Domain\Commerce\Payment\PaymentRepository;
+use IraniLMS\Domain\Commerce\CommerceServiceProvider;
+use IraniLMS\Plugin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,18 +23,14 @@ final class CheckoutController extends RestController {
         $gateway_id = sanitize_key( (string) $request->get_param( 'gateway' ) );
         $amount = absint( $request->get_param( 'amount' ) );
 
-        if ( $course_id <= 0 || '' === $gateway_id ) {
+        if ( $course_id <= 0 || '' === $gateway_id || $amount <= 0 ) {
             return new \WP_Error( 'invalid_checkout', __( 'اطلاعات خرید کامل نیست.', 'irani-lms' ), [ 'status' => 400 ] );
         }
 
         try {
-            $service = new CheckoutService(
-                new Order(),
-                new PaymentRepository(),
-                new GatewayManager()
-            );
-
-            $result = $service->create( $this->current_user_id(), $course_id, $amount, $gateway_id );
+            /** @var CommerceServiceProvider $commerce */
+            $commerce = Plugin::container()->get( CommerceServiceProvider::class );
+            $result = $commerce->checkout()->create( $this->current_user_id(), $course_id, $amount, $gateway_id );
             return new \WP_REST_Response( $result, 201 );
         } catch ( \Throwable $e ) {
             return new \WP_Error( 'checkout_failed', $e->getMessage(), [ 'status' => 400 ] );
