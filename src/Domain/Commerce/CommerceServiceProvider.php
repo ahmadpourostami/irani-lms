@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IraniLMS\Domain\Commerce;
 
+use IraniLMS\Domain\Commerce\Checkout\CheckoutService;
 use IraniLMS\Domain\Commerce\Gateway\GatewayManager;
 use IraniLMS\Domain\Commerce\Gateway\NullGateway;
 use IraniLMS\Domain\Commerce\Payment\PaymentEnrollmentBridge;
@@ -17,6 +18,7 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
     private Order $order;
     private PaymentRepository $payments;
     private GatewayManager $gateways;
+    private CheckoutService $checkout;
     private PaymentEnrollmentBridge $enrollment_bridge;
 
     public function register(): void {
@@ -26,6 +28,8 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
         $this->payments = new PaymentRepository();
         $this->gateways = new GatewayManager();
         $this->gateways->register( new NullGateway() );
+        $this->checkout = new CheckoutService( $this->order, $this->payments, $this->gateways );
+        $this->enrollment_bridge = new PaymentEnrollmentBridge( $this->payments, $this->order, new EnrollmentService() );
     }
 
     public function boot(): void {
@@ -36,12 +40,11 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
     }
 
     public function enroll_after_payment( int $payment_id, int $order_id ): void {
-        $enrollment_service = new EnrollmentService();
-        $bridge = new PaymentEnrollmentBridge( $this->payments, $this->order, $enrollment_service );
-        $bridge->handle( $payment_id, $order_id );
+        $this->enrollment_bridge->handle( $payment_id, $order_id );
     }
 
     public function order(): Order { return $this->order; }
     public function payments(): PaymentRepository { return $this->payments; }
     public function gateways(): GatewayManager { return $this->gateways; }
+    public function checkout(): CheckoutService { return $this->checkout; }
 }
