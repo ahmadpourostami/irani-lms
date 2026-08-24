@@ -1,0 +1,45 @@
+name: Build Plugin ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Validate Composer
+        run: composer validate --no-check-publish
+
+      - name: Install production dependencies
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare plugin package
+        shell: bash
+        run: |
+          set -e
+          rm -rf build
+          mkdir -p build/irani-lms
+          rsync -a --exclude='.git' --exclude='.github' --exclude='build' --exclude='tests' ./ build/irani-lms/
+
+      - name: Create ZIP
+        run: |
+          cd build
+          zip -r ../irani-lms.zip irani-lms
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: irani-lms-plugin
+          path: irani-lms.zip
