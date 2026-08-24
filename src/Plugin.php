@@ -28,9 +28,8 @@ final class Plugin {
 
     private function __construct() {
         $this->container = new ServiceContainer();
-        add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-        add_action( 'plugins_loaded', [ $this, 'register_services' ], 20 );
         add_action( 'init', [ $this, 'register_core_hooks' ], 5 );
+        $this->register_services();
     }
 
     public function load_textdomain(): void {
@@ -38,6 +37,10 @@ final class Plugin {
     }
 
     public function register_services(): void {
+        if ( $this->container->has( CourseServiceProvider::class ) ) {
+            return;
+        }
+
         $providers = [
             CourseServiceProvider::class,
             LearningServiceProvider::class,
