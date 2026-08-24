@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 final class PaymentRepository {
     private const META_KEY = '_irani_lms_payment';
 
-    public function create( int $order_id, int $amount, string $currency = 'IRT' ): int {
+    public function create( int $order_id, int $amount, string $currency = 'IRT', string $gateway = '' ): int {
         $payment_id = wp_insert_post(
             [
                 'post_type'   => 'irani_payment',
@@ -24,13 +24,13 @@ final class PaymentRepository {
         }
 
         update_post_meta( $payment_id, self::META_KEY, [
-            'order_id'  => $order_id,
-            'amount'    => max( 0, $amount ),
-            'currency'  => strtoupper( $currency ),
-            'status'    => Payment::STATUS_PENDING,
-            'gateway'   => '',
-            'authority' => '',
-            'created_at'=> current_time( 'mysql', true ),
+            'order_id'   => $order_id,
+            'amount'     => max( 0, $amount ),
+            'currency'   => strtoupper( $currency ),
+            'status'     => Payment::STATUS_PENDING,
+            'gateway'    => sanitize_key( $gateway ),
+            'authority'  => '',
+            'created_at' => current_time( 'mysql', true ),
         ] );
 
         return (int) $payment_id;
