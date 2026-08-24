@@ -8,24 +8,25 @@ use IraniLMS\Support\ServiceProviderInterface;
 
 final class AssessmentServiceProvider implements ServiceProviderInterface {
     private QuizPostType $post_type;
+    private AttemptPostType $attempt_post_type;
     private QuizMeta $meta;
     private Quiz $quiz;
+    private Attempt $attempt;
 
     public function register(): void {
         $this->post_type = new QuizPostType();
+        $this->attempt_post_type = new AttemptPostType();
         $this->meta = new QuizMeta();
         $this->quiz = new Quiz();
+        $this->attempt = new Attempt();
     }
 
     public function boot(): void {
         add_action( 'init', [ $this->post_type, 'register' ] );
+        add_action( 'init', [ $this->attempt_post_type, 'register' ] );
     }
 
-    public function meta(): QuizMeta {
-        return $this->meta;
-    }
-
-    public function quiz(): Quiz {
-        return $this->quiz;
-    }
+    public function meta(): QuizMeta { return $this->meta; }
+    public function quiz(): Quiz { return $this->quiz; }
+    public function attempt(): Attempt { return $this->attempt; }
 }
