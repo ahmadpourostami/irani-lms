@@ -22,6 +22,7 @@ final class ApiServiceProvider implements ServiceProviderInterface {
     private EnrollmentController $enrollment;
     private LessonController $lessons;
     private AssessmentController $assessment;
+    private HealthController $health;
 
     public function register(): void {
         $this->courses = new CourseController();
@@ -37,6 +38,7 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         $this->enrollment = new EnrollmentController();
         $this->lessons = new LessonController();
         $this->assessment = new AssessmentController();
+        $this->health = new HealthController();
     }
 
     public function boot(): void {
@@ -53,5 +55,6 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         add_action( 'rest_api_init', [ $this->enrollment, 'register' ] );
         add_action( 'rest_api_init', [ $this->lessons, 'register' ] );
         add_action( 'rest_api_init', [ $this->assessment, 'register' ] );
+        add_action( 'rest_api_init', [ $this->health, 'register' ] );
     }
 }
