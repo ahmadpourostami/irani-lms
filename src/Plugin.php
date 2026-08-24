@@ -6,6 +6,7 @@ namespace IraniLMS;
 
 defined( 'ABSPATH' ) || exit;
 
+use IraniLMS\Domain\Assessment\AssessmentServiceProvider;
 use IraniLMS\Domain\Commerce\CommerceServiceProvider;
 use IraniLMS\Domain\Course\CourseServiceProvider;
 use IraniLMS\Domain\Enrollment\EnrollmentServiceProvider;
@@ -32,11 +33,7 @@ final class Plugin {
     }
 
     public function load_textdomain(): void {
-        load_plugin_textdomain(
-            'irani-lms',
-            false,
-            dirname( plugin_basename( IRANI_LMS_FILE ) ) . '/languages'
-        );
+        load_plugin_textdomain( 'irani-lms', false, dirname( plugin_basename( IRANI_LMS_FILE ) ) . '/languages' );
     }
 
     public function register_services(): void {
@@ -45,6 +42,7 @@ final class Plugin {
             LearningServiceProvider::class,
             EnrollmentServiceProvider::class,
             CommerceServiceProvider::class,
+            AssessmentServiceProvider::class,
         ];
 
         foreach ( $providers as $provider_class ) {
