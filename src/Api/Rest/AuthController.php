@@ -11,13 +11,17 @@ final class AuthController extends RestController {
         $this->register_route( '/me', [
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [ $this, 'me' ],
-            'permission_callback' => [ $this, 'permission_logged_in' ],
+            'permission_callback' => [ $this, 'permission_authenticated' ],
         ] );
     }
 
     public function me(): \WP_REST_Response|\WP_Error {
         $user = wp_get_current_user();
         if ( ! $user->exists() ) {
+            $user_id = $this->current_user_id();
+            $user = $user_id > 0 ? get_user_by( 'id', $user_id ) : false;
+        }
+        if ( ! $user || ! $user->exists() ) {
             return new \WP_Error( 'not_authenticated', __( 'احراز هویت انجام نشده است.', 'irani-lms' ), [ 'status' => 401 ] );
         }
 
