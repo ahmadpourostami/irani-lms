@@ -1,0 +1,14 @@
+{
+  "name": "irani-lms/irani-lms",
+  "description": "A native Persian WordPress LMS focused on reliable Iranian commerce and a clean learning experience.",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "IraniLMS\\": "src/"
+    }
+  }
+}
