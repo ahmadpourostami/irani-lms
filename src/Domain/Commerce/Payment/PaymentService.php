@@ -25,9 +25,19 @@ final class PaymentService {
             throw new \RuntimeException( 'Payment gateway not found.' );
         }
 
-        $payment = new Payment( $payment_id, $data );
+        $payment = new Payment(
+            $payment_id,
+            absint( $data['order_id'] ?? 0 ),
+            absint( $data['amount'] ?? 0 ),
+            (string) ( $data['currency'] ?? 'IRT' ),
+            (string) ( $data['gateway'] ?? '' )
+        );
+
         $redirect = $gateway->purchase( $payment );
-        $this->payments->update( $payment_id, [ 'redirect_url' => esc_url_raw( $redirect ) ] );
+        $this->payments->update( $payment_id, [
+            'status' => Payment::STATUS_REDIRECT,
+            'redirect_url' => esc_url_raw( $redirect ),
+        ] );
 
         return $redirect;
     }
@@ -43,8 +53,16 @@ final class PaymentService {
             return false;
         }
 
-        $payment = new Payment( $payment_id, $data );
+        $payment = new Payment(
+            $payment_id,
+            absint( $data['order_id'] ?? 0 ),
+            absint( $data['amount'] ?? 0 ),
+            (string) ( $data['currency'] ?? 'IRT' ),
+            (string) ( $data['gateway'] ?? '' )
+        );
+
         if ( ! $gateway->verify( $payment, $callback_data ) ) {
+            $this->payments->update( $payment_id, [ 'status' => Payment::STATUS_FAILED ] );
             return false;
         }
 
@@ -53,7 +71,7 @@ final class PaymentService {
             'paid_at' => current_time( 'mysql', true ),
         ] );
 
-        do_action( 'irani_lms_payment_verified', $payment_id, $data );
+        do_action( 'irani_lms_payment_verified', $payment_id, $payment->get_order_id() );
         return true;
     }
 }
