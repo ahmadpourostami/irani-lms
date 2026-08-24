@@ -9,14 +9,16 @@ use IraniLMS\Support\ServiceProviderInterface;
 final class EnrollmentServiceProvider implements ServiceProviderInterface {
     private Enrollment $enrollment;
     private EnrollmentService $service;
+    private EnrollmentPostType $post_type;
 
     public function register(): void {
         $this->enrollment = new Enrollment();
         $this->service = new EnrollmentService();
+        $this->post_type = new EnrollmentPostType();
     }
 
     public function boot(): void {
-        // Enrollment is triggered by successful commerce transactions.
+        add_action( 'init', [ $this->post_type, 'register' ] );
     }
 
     public function enrollment(): Enrollment { return $this->enrollment; }
