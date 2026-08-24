@@ -16,11 +16,13 @@ final class Payment {
         private readonly int $id,
         private readonly int $order_id,
         private readonly int $amount,
-        private readonly string $currency = 'IRT'
+        private readonly string $currency = 'IRT',
+        private readonly string $gateway = ''
     ) {}
 
     public function get_id(): int { return $this->id; }
     public function get_order_id(): int { return $this->order_id; }
     public function get_amount(): int { return $this->amount; }
     public function get_currency(): string { return $this->currency; }
+    public function get_gateway(): string { return $this->gateway; }
 }
