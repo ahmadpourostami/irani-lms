@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 const IRANI_LMS_VERSION = '0.1.0';
 const IRANI_LMS_FILE    = __FILE__;
 const IRANI_LMS_PATH    = __DIR__ . '/';
-const IRANI_LMS_URL     = plugin_dir_url( __FILE__ );
+define( 'IRANI_LMS_URL', plugin_dir_url( __FILE__ ) );
 
 require_once IRANI_LMS_PATH . 'src/Autoloader.php';
 require_once IRANI_LMS_PATH . 'src/Plugin.php';

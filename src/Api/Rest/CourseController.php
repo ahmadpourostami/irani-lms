@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IraniLMS\Api\Rest;
 
 use IraniLMS\Domain\Course\CoursePostType;
+use IraniLMS\Domain\Course\CoursePricing;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,13 +35,21 @@ final class CourseController extends RestController {
             'paged' => max( 1, absint( $request->get_param( 'page' ) ?: 1 ) ),
         ] );
 
-        $items = array_map( static function ( \WP_Post $post ): array {
+        $pricing = new CoursePricing();
+        $items = array_map( static function ( \WP_Post $post ) use ( $pricing ): array {
+            $price = $pricing->get( $post->ID );
             return [
                 'id' => $post->ID,
                 'title' => get_the_title( $post ),
                 'slug' => $post->post_name,
                 'excerpt' => wp_strip_all_tags( get_the_excerpt( $post ) ),
                 'url' => get_permalink( $post ),
+                'pricing' => [
+                    'price' => $price['price'],
+                    'sale_price' => $price['sale_price'],
+                    'payable' => $pricing->get_payable_amount( $post->ID ),
+                    'currency' => CoursePricing::CURRENCY_IRT,
+                ],
             ];
         }, $query->posts );
 
@@ -59,6 +68,8 @@ final class CourseController extends RestController {
             return new \WP_Error( 'course_not_found', __( 'دوره پیدا نشد.', 'irani-lms' ), [ 'status' => 404 ] );
         }
 
+        $pricing = new CoursePricing();
+        $price = $pricing->get( $post->ID );
         return new \WP_REST_Response( [
             'id' => $post->ID,
             'title' => get_the_title( $post ),
@@ -66,6 +77,7 @@ final class CourseController extends RestController {
             'content' => apply_filters( 'the_content', $post->post_content ),
             'excerpt' => wp_strip_all_tags( get_the_excerpt( $post ) ),
             'url' => get_permalink( $post ),
+            'pricing' => [ 'price' => $price['price'], 'sale_price' => $price['sale_price'], 'payable' => $pricing->get_payable_amount( $post->ID ), 'currency' => CoursePricing::CURRENCY_IRT ],
         ] );
     }
 }

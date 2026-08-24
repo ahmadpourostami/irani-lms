@@ -9,6 +9,7 @@ use IraniLMS\Domain\Commerce\Gateway\GatewayManager;
 use IraniLMS\Domain\Commerce\Gateway\NullGateway;
 use IraniLMS\Domain\Commerce\Payment\PaymentEnrollmentBridge;
 use IraniLMS\Domain\Commerce\Payment\PaymentRepository;
+use IraniLMS\Domain\Commerce\Payment\PaymentService;
 use IraniLMS\Domain\Enrollment\EnrollmentService;
 use IraniLMS\Support\ServiceProviderInterface;
 
@@ -19,6 +20,7 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
     private PaymentRepository $payments;
     private GatewayManager $gateways;
     private CheckoutService $checkout;
+    private PaymentService $payment_service;
     private PaymentEnrollmentBridge $enrollment_bridge;
 
     public function register(): void {
@@ -29,6 +31,7 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
         $this->gateways = new GatewayManager();
         $this->gateways->register( new NullGateway() );
         $this->checkout = new CheckoutService( $this->order, $this->payments, $this->gateways );
+        $this->payment_service = new PaymentService( $this->payments, $this->gateways );
         $this->enrollment_bridge = new PaymentEnrollmentBridge( $this->payments, $this->order, new EnrollmentService() );
     }
 
@@ -47,4 +50,5 @@ final class CommerceServiceProvider implements ServiceProviderInterface {
     public function payments(): PaymentRepository { return $this->payments; }
     public function gateways(): GatewayManager { return $this->gateways; }
     public function checkout(): CheckoutService { return $this->checkout; }
+    public function payment_service(): PaymentService { return $this->payment_service; }
 }

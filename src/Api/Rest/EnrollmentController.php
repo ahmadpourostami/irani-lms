@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IraniLMS\Api\Rest;
 
+use IraniLMS\Domain\Course\CoursePostType;
 use IraniLMS\Domain\Course\CoursePricing;
 use IraniLMS\Domain\Enrollment\EnrollmentService;
 
@@ -21,7 +22,7 @@ final class EnrollmentController extends RestController {
     public function enroll( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
         $course_id = absint( $request['course_id'] );
         $course = get_post( $course_id );
-        if ( ! $course || 'irani_course' !== $course->post_type || 'publish' !== $course->post_status ) {
+        if ( ! $course || CoursePostType::POST_TYPE !== $course->post_type || 'publish' !== $course->post_status ) {
             return new \WP_Error( 'course_not_found', __( 'دوره پیدا نشد.', 'irani-lms' ), [ 'status' => 404 ] );
         }
 
