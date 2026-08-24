@@ -6,7 +6,9 @@ namespace IraniLMS;
 
 defined( 'ABSPATH' ) || exit;
 
+use IraniLMS\Domain\Commerce\CommerceServiceProvider;
 use IraniLMS\Domain\Course\CourseServiceProvider;
+use IraniLMS\Domain\Enrollment\EnrollmentServiceProvider;
 use IraniLMS\Domain\Learning\LearningServiceProvider;
 use IraniLMS\Support\ServiceContainer;
 use IraniLMS\Support\ServiceProviderInterface;
@@ -41,6 +43,8 @@ final class Plugin {
         $providers = [
             CourseServiceProvider::class,
             LearningServiceProvider::class,
+            EnrollmentServiceProvider::class,
+            CommerceServiceProvider::class,
         ];
 
         foreach ( $providers as $provider_class ) {
@@ -58,7 +62,7 @@ final class Plugin {
     }
 
     public function register_core_hooks(): void {
-        // Core hooks will be registered here as the domain modules are introduced.
+        // Cross-domain hooks will be registered here as the application grows.
     }
 
     public static function container(): ServiceContainer {
