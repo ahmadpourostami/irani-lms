@@ -28,6 +28,7 @@ final class Plugin {
 
     private function __construct() {
         $this->container = new ServiceContainer();
+        add_action( 'init', [ $this, 'load_textdomain' ], 2 );
         add_action( 'init', [ $this, 'register_core_hooks' ], 5 );
         $this->register_services();
     }
