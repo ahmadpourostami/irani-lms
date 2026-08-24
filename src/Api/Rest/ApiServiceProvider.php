@@ -18,6 +18,8 @@ final class ApiServiceProvider implements ServiceProviderInterface {
     private CheckoutController $checkout;
     private PaymentController $payments;
     private GatewayController $gateways;
+    private OrderController $orders;
+    private EnrollmentController $enrollment;
 
     public function register(): void {
         $this->courses = new CourseController();
@@ -29,6 +31,8 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         $this->checkout = new CheckoutController();
         $this->payments = new PaymentController();
         $this->gateways = new GatewayController();
+        $this->orders = new OrderController();
+        $this->enrollment = new EnrollmentController();
     }
 
     public function boot(): void {
@@ -41,5 +45,7 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         add_action( 'rest_api_init', [ $this->checkout, 'register' ] );
         add_action( 'rest_api_init', [ $this->payments, 'register' ] );
         add_action( 'rest_api_init', [ $this->gateways, 'register' ] );
+        add_action( 'rest_api_init', [ $this->orders, 'register' ] );
+        add_action( 'rest_api_init', [ $this->enrollment, 'register' ] );
     }
 }
