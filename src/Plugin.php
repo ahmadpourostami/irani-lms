@@ -11,6 +11,7 @@ use IraniLMS\Domain\Commerce\CommerceServiceProvider;
 use IraniLMS\Domain\Course\CourseServiceProvider;
 use IraniLMS\Domain\Enrollment\EnrollmentServiceProvider;
 use IraniLMS\Domain\Learning\LearningServiceProvider;
+use IraniLMS\Domain\Progress\ProgressServiceProvider;
 use IraniLMS\Support\ServiceContainer;
 use IraniLMS\Support\ServiceProviderInterface;
 
@@ -26,7 +27,6 @@ final class Plugin {
 
     private function __construct() {
         $this->container = new ServiceContainer();
-
         add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
         add_action( 'plugins_loaded', [ $this, 'register_services' ], 20 );
         add_action( 'init', [ $this, 'register_core_hooks' ], 5 );
@@ -43,6 +43,7 @@ final class Plugin {
             EnrollmentServiceProvider::class,
             CommerceServiceProvider::class,
             AssessmentServiceProvider::class,
+            ProgressServiceProvider::class,
         ];
 
         foreach ( $providers as $provider_class ) {
@@ -54,20 +55,16 @@ final class Plugin {
 
         foreach ( $providers as $provider_class ) {
             /** @var ServiceProviderInterface $provider */
-            $provider = $this->container->get( $provider_class );
-            $provider->boot();
+            $this->container->get( $provider_class )->boot();
         }
     }
 
-    public function register_core_hooks(): void {
-        // Cross-domain hooks will be registered here as the application grows.
-    }
+    public function register_core_hooks(): void {}
 
     public static function container(): ServiceContainer {
         if ( null === self::$instance ) {
             throw new \RuntimeException( 'Irani LMS has not been booted.' );
         }
-
         return self::$instance->container;
     }
 }
