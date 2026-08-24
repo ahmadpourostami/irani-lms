@@ -15,6 +15,7 @@ final class ApiServiceProvider implements ServiceProviderInterface {
     private StudentController $student;
     private ProgressController $progress;
     private LearningController $learning;
+    private CheckoutController $checkout;
 
     public function register(): void {
         $this->courses = new CourseController();
@@ -23,6 +24,7 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         $this->student = new StudentController();
         $this->progress = new ProgressController();
         $this->learning = new LearningController();
+        $this->checkout = new CheckoutController();
     }
 
     public function boot(): void {
@@ -32,5 +34,6 @@ final class ApiServiceProvider implements ServiceProviderInterface {
         add_action( 'rest_api_init', [ $this->student, 'register' ] );
         add_action( 'rest_api_init', [ $this->progress, 'register' ] );
         add_action( 'rest_api_init', [ $this->learning, 'register' ] );
+        add_action( 'rest_api_init', [ $this->checkout, 'register' ] );
     }
 }
