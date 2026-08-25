@@ -22,6 +22,7 @@ final class LessonPostType {
                 'public'       => false,
                 'show_ui'      => true,
                 'show_in_rest' => true,
+                'show_in_menu' => \IraniLMS\Admin\AdminMenu::SLUG,
                 'menu_icon'    => 'dashicons-format-video',
                 'supports'     => [ 'title', 'editor', 'thumbnail', 'author' ],
                 'capability_type' => [ 'lesson', 'lessons' ],

@@ -20,6 +20,7 @@ final class QuizPostType {
             'public' => false,
             'show_ui' => true,
             'show_in_rest' => true,
+            'show_in_menu' => \IraniLMS\Admin\AdminMenu::SLUG,
             'menu_icon' => 'dashicons-clipboard',
             'supports' => [ 'title', 'editor', 'author' ],
         ] );

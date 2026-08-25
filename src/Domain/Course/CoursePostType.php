@@ -23,6 +23,7 @@ final class CoursePostType {
                 'public'             => true,
                 'show_ui'            => true,
                 'show_in_rest'       => true,
+                'show_in_menu'       => \IraniLMS\Admin\AdminMenu::SLUG,
                 'menu_icon'          => 'dashicons-welcome-learn-more',
                 'supports'           => [ 'title', 'editor', 'thumbnail', 'excerpt', 'author' ],
                 'has_archive'        => true,

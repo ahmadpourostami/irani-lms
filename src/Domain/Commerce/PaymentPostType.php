@@ -20,6 +20,7 @@ final class PaymentPostType {
                 'public'       => false,
                 'show_ui'      => true,
                 'show_in_rest' => false,
+                'show_in_menu' => \IraniLMS\Admin\AdminMenu::SLUG,
                 'supports'     => [ 'title' ],
                 'menu_icon'    => 'dashicons-money-alt',
             ]

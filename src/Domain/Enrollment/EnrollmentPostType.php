@@ -18,6 +18,7 @@ final class EnrollmentPostType {
             'public' => false,
             'show_ui' => true,
             'show_in_rest' => false,
+            'show_in_menu' => \IraniLMS\Admin\AdminMenu::SLUG,
             'supports' => [ 'title', 'author' ],
             'menu_icon' => 'dashicons-welcome-learn-more',
         ] );

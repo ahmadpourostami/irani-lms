@@ -7,6 +7,7 @@ namespace IraniLMS;
 defined( 'ABSPATH' ) || exit;
 
 use IraniLMS\Api\Rest\ApiServiceProvider;
+use IraniLMS\Admin\AdminServiceProvider;
 use IraniLMS\Domain\Assessment\AssessmentServiceProvider;
 use IraniLMS\Domain\Commerce\CommerceServiceProvider;
 use IraniLMS\Domain\Course\CourseServiceProvider;
@@ -43,6 +44,7 @@ final class Plugin {
         }
 
         $providers = [
+            AdminServiceProvider::class,
             CourseServiceProvider::class,
             LearningServiceProvider::class,
             EnrollmentServiceProvider::class,
